@@ -1,4 +1,0 @@
-service: worker-bucket-message
-runtime: python311
-entrypoint: uvicorn worker:app --host 0.0.0.0 --port $PORT
-instance_class: F2
