@@ -15,4 +15,9 @@ export class AppController {
   postStatus(@Body() body: {idSender: string, idReceiver: string, msg: string}) {
     return this.appService.postStatus(body);
   }
+
+  @Get('history')
+  getDb(): string {
+    return this.appService.getDb();
+  }
 }
