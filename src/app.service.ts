@@ -16,23 +16,28 @@ export class AppService {
 
   getDb(): string {
     // Replace the URI with your own MongoDB URI
-    const uri = "mongodb://uzqce0sg9aevrorkmrrv:gVbmOxI9Z2OAnXiSf1E@bwtohbemviuyaixfsi7c-mongodb.services.clever-cloud.com:2388/bwtohbemviuyaixfsi7c"
 
     // Create a new MongoClient
-    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+    const client = new MongoClient(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
     async function run() {
       try {
+        console.log("Connecting to MongoDB...");
+        console.log("URI : ", process.env.MONGODB_URI);
+        console.log("Database name : ", process.env.DATABASE_NAME);
+        console.log("Collection name : ", process.env.COLLECTION_NAME);
         // Connect to the MongoDB server
         await client.connect();
     
         // Access the database
-        const database = client.db("bwtohbemviuyaixfsi7c");
+        //const database = client.db("bwtohbemviuyaixfsi7c");
+        const database = client.db(process.env.DATABASE_NAME);
     
         // Access the collection
-        const collection = database.collection("messaging");
+        const collection = database.collection(process.env.COLLECTION_NAME);
         //"651c1695c8838005550b365a"
         // Example query
-        const result = await collection.findOne({});
+        const result = await collection.find().toArray();
     
         console.log(result);
       } finally {
@@ -44,4 +49,3 @@ export class AppService {
     return "";
   }
 }
-
