@@ -40,13 +40,13 @@ export class AppService {
         // Example query
         const result = await collection.find().toArray();
     
-        console.log(result);
+        return result;
+
       } finally {
         // Close the connection when done
         await client.close();
       }
     }
     run().catch(console.error);
-    return result; 
   }
 }
