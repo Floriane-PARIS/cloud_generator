@@ -17,7 +17,8 @@ export class AppController {
   }
 
   @Get('history')
-  getDb(): string {
-    return this.appService.getDb();
+  async getDb(): Promise<any> {
+    return await this.appService.getDb();
   }
+  
 }

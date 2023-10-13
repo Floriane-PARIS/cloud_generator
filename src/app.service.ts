@@ -14,13 +14,14 @@ export class AppService {
     return 'Hello World!';
   }
 
-  getDb(): string {
+  async getDb(): Promise<any> {
     // Replace the URI with your own MongoDB URI
 
     // Create a new MongoClient
-
     const client = new MongoClient(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-    async function run() {
+    let result;
+
+    const run = async () => {
       try {
         console.log("Connecting to MongoDB...");
         console.log("URI : ", process.env.MONGODB_URI);
@@ -46,6 +47,6 @@ export class AppService {
       }
     }
     run().catch(console.error);
-    return "";
+    return result; 
   }
 }
