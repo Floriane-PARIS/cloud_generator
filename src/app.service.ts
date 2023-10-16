@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { ObjectId } from 'mongodb';
 const { MongoClient } = require('mongodb');
 
@@ -6,6 +7,8 @@ const { MongoClient } = require('mongodb');
 
 @Injectable()
 export class AppService {
+  constructor(private configService: ConfigService) {}
+
   postStatus(body: { idSender: string; idReceiver: string; msg: string; }) {
     console.log("New message sent by '"+ body.idSender+ "' for '"+ body.idReceiver+ "'")
     console.log("Message : ", body.msg);
@@ -17,7 +20,10 @@ export class AppService {
 
   async getDb(): Promise<any> {
     // Replace the URI with your own MongoDB URI
-    const uri = "mongodb://uroccssvevcnzmiglusv:ptizczpirzvz3psji1m9r3psdr48vm@bhogfnwfnzjnxwhnchfs-mongodb.services.clever-cloud.com:2120/bhogfnwfnzjnxwhnchfs"
+    const uri = this.configService.get<string>('mongodb_uri');
+    const dbName = this.configService.get<string>('database_name');
+    const collectionName = this.configService.get<string>('collection_name');
+
 
     // Create a new MongoClient
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -26,10 +32,10 @@ export class AppService {
       await client.connect();
   
       // Access the database
-      const database = client.db("bhogfnwfnzjnxwhnchfs");
+      const database = client.db(dbName);
   
       // Access the collection
-      const collection = database.collection("conversation");
+      const collection = database.collection(collectionName);
   
       // Get the document with id 652924bdc5faf4a0ad9e9ab0
       const id = "652924bdc5faf4a0ad9e9ab0";
@@ -53,4 +59,3 @@ export class AppService {
     
   }
 }
-
