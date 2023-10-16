@@ -12,7 +12,7 @@ export class AppController {
 
   @Post('message')
   @HttpCode(200)
-  receiveMessage(@Body() body: {conversation_id : string, sender: string, timestamp : string, text: string, image: string, read_by : string[], smoke : boolean}) {
+  receiveMessage(@Body() body: {_id : string, conversation_id : string, sender: string, timestamp : string, text: string, image: string, read_by : string[], smoke : boolean}) {
     console.log("Conversation : " + body.conversation_id);
     return this.appService.receiveMessage(body);
   }

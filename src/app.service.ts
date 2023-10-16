@@ -11,7 +11,7 @@ import { EventsGateway } from './events.gateway';
 export class AppService {
   constructor(private configService: ConfigService, private gateway: EventsGateway) {}
 
-  receiveMessage(body: {conversation_id : string, sender: string, timestamp : string, text: string, image: string, read_by : string[], smoke : boolean}) {
+  receiveMessage(body: {_id : string, conversation_id : string, sender: string, timestamp : string, text: string, image: string, read_by : string[], smoke : boolean}) {
     console.log("Conversation : " + body.conversation_id);
     console.log("New message sent by : "+ body.sender);
     console.log("Message : ", body.text);
