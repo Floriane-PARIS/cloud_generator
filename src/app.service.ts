@@ -19,7 +19,7 @@ export class AppService {
   }
 
   async getDb(): Promise<any> {
-    // Replace the URI with your own MongoDB URI
+    // Get config values
     const uri = this.configService.get<string>('mongodb_uri');
     const dbName = this.configService.get<string>('database_name');
     const collectionName = this.configService.get<string>('collection_name');
