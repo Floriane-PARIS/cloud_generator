@@ -1,6 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
+import { IoAdapter } from '@nestjs/platform-socket.io';
+
 
 
 async function bootstrap() {
@@ -13,6 +15,8 @@ async function bootstrap() {
     optionsSuccessStatus: 204,
   };
   app.enableCors(corsOptions);
+
+  app.useWebSocketAdapter(new IoAdapter(app));
 
   await app.listen(8080);
 }

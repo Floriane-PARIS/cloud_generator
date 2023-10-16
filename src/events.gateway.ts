@@ -19,6 +19,10 @@ import {
   export class EventsGateway implements OnGatewayConnection {
     @WebSocketServer()
     server: Server;
+
+    sendToAll(msg: string) {
+        this.server.emit('newMessage', msg);
+    }
   
     handleConnection(client: any, ...args: any[]) {
       console.log('New client connected');

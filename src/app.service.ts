@@ -3,12 +3,13 @@ import { ConfigService } from '@nestjs/config';
 import { Console } from 'console';
 import { ObjectId } from 'mongodb';
 const { MongoClient } = require('mongodb');
+import { EventsGateway } from './events.gateway';
 
 
 
 @Injectable()
 export class AppService {
-  constructor(private configService: ConfigService) {}
+  constructor(private configService: ConfigService, private gateway: EventsGateway) {}
 
   receiveMessage(body: {conversation_id : string, sender: string, timestamp : string, text: string, image: string}) {
     console.log("Conversation : " + body.conversation_id);
@@ -16,6 +17,7 @@ export class AppService {
     console.log("Message : ", body.text);
     console.log("Image : ", body.image);
     // Here need to send by socket.io to the other user ?
+    this.gateway.sendToAll(JSON.stringify(body));
     return "New message sent by " + body.sender + "\nMessage : " + body.text;
   }
   getHello(): string {
