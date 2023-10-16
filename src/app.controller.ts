@@ -10,10 +10,11 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Post()
+  @Post('message')
   @HttpCode(200)
-  postStatus(@Body() body: {idSender: string, idReceiver: string, msg: string}) {
-    return this.appService.postStatus(body);
+  receiveMessage(@Body() body: {conversation_id : string, sender: string, timestamp : string, text: string, image: string}) {
+    console.log("Conversation : " + body.conversation_id);
+    return this.appService.receiveMessage(body);
   }
 
   @Get('history')

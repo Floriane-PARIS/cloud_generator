@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Console } from 'console';
 import { ObjectId } from 'mongodb';
 const { MongoClient } = require('mongodb');
 
@@ -9,10 +10,13 @@ const { MongoClient } = require('mongodb');
 export class AppService {
   constructor(private configService: ConfigService) {}
 
-  postStatus(body: { idSender: string; idReceiver: string; msg: string; }) {
-    console.log("New message sent by '"+ body.idSender+ "' for '"+ body.idReceiver+ "'")
-    console.log("Message : ", body.msg);
-    return "New message sent by '"+ body.idSender+ "' for '"+ body.idReceiver+ "'\nMessage : "+ body.msg;
+  receiveMessage(body: {conversation_id : string, sender: string, timestamp : string, text: string, image: string}) {
+    console.log("Conversation : " + body.conversation_id);
+    console.log("New message sent by : "+ body.sender);
+    console.log("Message : ", body.text);
+    console.log("Image : ", body.image);
+    // Here need to send by socket.io to the other user ?
+    return "New message sent by " + body.sender + "\nMessage : " + body.text;
   }
   getHello(): string {
     return 'Hello World!';
