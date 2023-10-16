@@ -9,7 +9,8 @@ import {
   
   @WebSocketGateway({
     cors: {
-      origin: "https://app-061c7eb9-4e4d-4bff-a3ba-ac5f184e2f25.cleverapps.io",
+      //origin: "https://app-061c7eb9-4e4d-4bff-a3ba-ac5f184e2f25.cleverapps.io",
+      origin: "*",
       methods: ["GET", "POST", "HEAD", "PUT", "PATCH", "DELETE"],
       credentials: true,
     },
