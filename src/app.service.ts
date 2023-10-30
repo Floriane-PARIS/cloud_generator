@@ -44,7 +44,7 @@ export class AppService {
       const collection = database.collection(collectionName);
   
       // Get the document with id 652924bdc5faf4a0ad9e9ab0
-      const id = "652924bdc5faf4a0ad9e9ab0";
+      const id = "653fa5b2991fd05dc55ef7d0";
   
       // convert id from string to ObjectId
       const query = { _id: new ObjectId(id) };
