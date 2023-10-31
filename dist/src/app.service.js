@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppService = void 0;
 const common_1 = require("@nestjs/common");
+const pubsub_1 = require("@google-cloud/pubsub");
 const config_1 = require("@nestjs/config");
 const mongodb_1 = require("mongodb");
 const { MongoClient } = require('mongodb');
@@ -19,6 +20,59 @@ let AppService = class AppService {
     constructor(configService, gateway) {
         this.configService = configService;
         this.gateway = gateway;
+    }
+    onModuleInit() {
+        this.pubSubClient = this.createPubSubClient();
+        const subscriptionNameOrId = this.configService.get('google_subscription_id');
+        this.listenForMessages(subscriptionNameOrId);
+    }
+    createPubSubClient() {
+        const credentialsJson = this.configService.get('google_application_credentials_content');
+        const credentials = JSON.parse(credentialsJson);
+        const pubSubClient = new pubsub_1.PubSub({
+            projectId: credentials.project_id,
+            credentials: {
+                client_email: credentials.client_email,
+                private_key: credentials.private_key,
+            },
+        });
+        return pubSubClient;
+    }
+    listenForMessages(subscriptionNameOrId) {
+        const subscription = this.pubSubClient.subscription(subscriptionNameOrId);
+        const isJsonString = (str) => {
+            try {
+                JSON.parse(str);
+            }
+            catch (e) {
+                return false;
+            }
+            return true;
+        };
+        const messageHandler = (message) => {
+            console.log(`Received message ${message.id}:`);
+            console.log(`\tData: ${message.data.toString()}`);
+            console.log(`\tAttributes: ${JSON.stringify(message.attributes)}`);
+            message.ack();
+            const messageData = message.data.toString();
+            if (isJsonString(messageData)) {
+                this.receiveMessage(JSON.parse(messageData));
+            }
+            else {
+                console.warn('Received a non-JSON message:', messageData);
+            }
+        };
+        subscription.on('message', messageHandler);
+        subscription.on('error', error => {
+            console.error(`Received error: ${error.message}`);
+            this.reconnect(subscriptionNameOrId);
+        });
+    }
+    reconnect(subscriptionNameOrId) {
+        setTimeout(() => {
+            console.log('Attempting to reconnect...');
+            this.listenForMessages(subscriptionNameOrId);
+        }, 5000);
     }
     receiveMessage(body) {
         console.log("Conversation : " + body.conversation_id);
