@@ -19,7 +19,6 @@ async function bootstrap() {
     .setTitle('Reicever API')
     .setDescription('Routes for the reicever API')
     .setVersion('1.0')
-    .addTag('reicever')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
