@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpCode, Headers, Post, Query, HttpException, HttpStatus, Param } from '@nestjs/common';
 import { AppService } from './app.service';
-import { ApiBody, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 
 @ApiTags('Server')
 @Controller('server')
@@ -48,6 +48,7 @@ export class AppController {
   @Get('conversation/:id/history')
   @ApiOperation({ summary: 'Get Conversation History' })
   @ApiResponse({ status: 200, description: 'Return the conversation history based on id.' })
+  @ApiParam({ name: 'id', type: 'string'})
   async getConversationHistory(@Param('id') id: string): Promise<any> {
     return await this.appService.getConversationHistory(id);
   }
@@ -55,6 +56,7 @@ export class AppController {
   @Get('conversation/:id')
   @ApiOperation({ summary: 'Get Conversation' })
   @ApiResponse({ status: 200, description: 'Return the conversation based on id.' })
+  @ApiParam({ name: 'id', type: 'string'})
   async getConversation(@Param('id') id: string): Promise<any> {
     return await this.appService.getConversation(id);
   }
