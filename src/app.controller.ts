@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Headers, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Headers, Post, Query, HttpException, HttpStatus } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApiBody, ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
@@ -50,6 +50,24 @@ export class AppController {
   @ApiResponse({ status: 200, description: 'Return the conversation history based on id.' })
   async getConversationHistory(@Headers('id') id: string): Promise<any> {
     return await this.appService.getConversationHistory(id);
+  }
+
+  @Get('conversation/:id')
+  @ApiOperation({ summary: 'Get Conversation' })
+  @ApiResponse({ status: 200, description: 'Return the conversation based on id.' })
+  async getConversation(@Headers('id') id: string): Promise<any> {
+    return await this.appService.getConversation(id);
+  }
+
+  @Get('stories')
+  @ApiOperation({ summary: 'Get Stories' })
+  @ApiResponse({ status: 200, description: 'Return the stories.' })
+  async getStories(@Query('storyIds') storyIds: string[]): Promise<any> {
+    try {
+      return await this.appService.getStories(storyIds);
+    } catch (error) {
+      throw new HttpException(`Failed to get stories: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
   
 }

@@ -88,7 +88,7 @@ let AppService = class AppService {
     async getHistory() {
         const uri = this.configService.get('mongodb_uri');
         const dbName = this.configService.get('database_name');
-        const collectionName = this.configService.get('collection_name');
+        const collectionName = this.configService.get('collection_conversation');
         const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
         try {
             await client.connect();
@@ -111,12 +111,12 @@ let AppService = class AppService {
     async getConversationHistory(id) {
         const uri = this.configService.get('mongodb_uri');
         const dbName = this.configService.get('database_name');
-        const collectionName = this.configService.get('collection_name');
+        const collectionConversation = this.configService.get('collection_conversation');
         const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
         try {
             await client.connect();
             const database = client.db(dbName);
-            const collection = database.collection(collectionName);
+            const collection = database.collection(collectionConversation);
             const query = { _id: new mongodb_1.ObjectId(id) };
             const result = await collection.findOne(query);
             if (result) {
@@ -125,6 +125,60 @@ let AppService = class AppService {
             }
             else {
                 return { error: 'Conversation not found' };
+            }
+        }
+        catch (err) {
+            console.log(err);
+            return { error: err };
+        }
+        finally {
+            await client.close();
+        }
+    }
+    async getConversation(id) {
+        const uri = this.configService.get('mongodb_uri');
+        const dbName = this.configService.get('database_name');
+        const collectionConversation = this.configService.get('collection_conversation');
+        const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        try {
+            await client.connect();
+            const database = client.db(dbName);
+            const collection = database.collection(collectionConversation);
+            const query = { _id: new mongodb_1.ObjectId(id) };
+            const result = await collection.findOne(query);
+            if (result) {
+                console.log(result);
+                return result;
+            }
+            else {
+                return { error: 'Conversation not found' };
+            }
+        }
+        catch (err) {
+            console.log(err);
+            return { error: err };
+        }
+        finally {
+            await client.close();
+        }
+    }
+    async getStories(storyIds) {
+        const uri = this.configService.get('mongodb_uri');
+        const dbName = this.configService.get('database_name');
+        const collectionStory = this.configService.get('collection_story');
+        const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        try {
+            await client.connect();
+            const database = client.db(dbName);
+            const collection = database.collection(collectionStory);
+            const query = { _id: { $in: storyIds.map(id => new mongodb_1.ObjectId(id)) } };
+            const result = await collection.find(query).toArray();
+            if (result) {
+                console.log(result);
+                return result;
+            }
+            else {
+                return { error: 'Stories not found' };
             }
         }
         catch (err) {

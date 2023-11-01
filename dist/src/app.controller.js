@@ -33,6 +33,17 @@ let AppController = class AppController {
     async getConversationHistory(id) {
         return await this.appService.getConversationHistory(id);
     }
+    async getConversation(id) {
+        return await this.appService.getConversation(id);
+    }
+    async getStories(storyIds) {
+        try {
+            return await this.appService.getStories(storyIds);
+        }
+        catch (error) {
+            throw new common_1.HttpException(`Failed to get stories: ${error.message}`, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 };
 exports.AppController = AppController;
 __decorate([
@@ -85,6 +96,24 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "getConversationHistory", null);
+__decorate([
+    (0, common_1.Get)('conversation/:id'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get Conversation' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Return the conversation based on id.' }),
+    __param(0, (0, common_1.Headers)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "getConversation", null);
+__decorate([
+    (0, common_1.Get)('stories'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get Stories' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Return the stories.' }),
+    __param(0, (0, common_1.Query)('storyIds')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Array]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "getStories", null);
 exports.AppController = AppController = __decorate([
     (0, swagger_1.ApiTags)('Server'),
     (0, common_1.Controller)('server'),

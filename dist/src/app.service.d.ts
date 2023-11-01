@@ -23,4 +23,6 @@ export declare class AppService {
     getHello(): string;
     getHistory(): Promise<any>;
     getConversationHistory(id: string): Promise<any>;
+    getConversation(id: string): Promise<any>;
+    getStories(storyIds: string[]): Promise<any>;
 }
