@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
 const app_service_1 = require("./app.service");
+const swagger_1 = require("@nestjs/swagger");
 let AppController = class AppController {
     constructor(appService) {
         this.appService = appService;
@@ -26,13 +27,18 @@ let AppController = class AppController {
         console.log("Conversation : " + body.conversation_id);
         return this.appService.receiveMessage(body);
     }
-    async getDb() {
-        return await this.appService.getDb();
+    async getHistory() {
+        return await this.appService.getHistory();
+    }
+    async getConversationHistory(id) {
+        return await this.appService.getConversationHistory(id);
     }
 };
 exports.AppController = AppController;
 __decorate([
     (0, common_1.Get)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Get Hello Message' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Return a hello message.' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", String)
@@ -40,6 +46,23 @@ __decorate([
 __decorate([
     (0, common_1.Post)('message'),
     (0, common_1.HttpCode)(200),
+    (0, swagger_1.ApiOperation)({ summary: 'Receive Message' }),
+    (0, swagger_1.ApiBody)({
+        schema: {
+            type: 'object',
+            properties: {
+                _id: { type: 'string', example: '1' },
+                conversation_id: { type: 'string', example: '123' },
+                sender: { type: 'string', example: 'user1' },
+                timestamp: { type: 'string', example: '2023-11-01T00:00:00Z' },
+                text: { type: 'string', example: 'Hello' },
+                image: { type: 'string', example: 'http://example.com/image.jpg' },
+                read_by: { type: 'array', items: { type: 'string' }, example: ['user1', 'user2'] },
+                smoke: { type: 'boolean', example: false },
+            },
+        },
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Message received successfully.' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -47,11 +70,23 @@ __decorate([
 ], AppController.prototype, "receiveMessage", null);
 __decorate([
     (0, common_1.Get)('history'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get History' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Return the history.' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], AppController.prototype, "getDb", null);
+], AppController.prototype, "getHistory", null);
+__decorate([
+    (0, common_1.Get)('conversation/:id/history'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get Conversation History' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Return the conversation history based on id.' }),
+    __param(0, (0, common_1.Headers)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "getConversationHistory", null);
 exports.AppController = AppController = __decorate([
+    (0, swagger_1.ApiTags)('Server'),
     (0, common_1.Controller)('server'),
     __metadata("design:paramtypes", [app_service_1.AppService])
 ], AppController);

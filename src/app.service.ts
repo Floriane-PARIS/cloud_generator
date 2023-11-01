@@ -98,7 +98,7 @@ export class AppService {
     return 'Hello World!';
   }
 
-  async getDb(): Promise<any> {
+  async getHistory(): Promise<any> {
     // Get config values
     const uri = this.configService.get<string>('mongodb_uri');
     const dbName = this.configService.get<string>('database_name');
@@ -138,4 +138,48 @@ export class AppService {
     }
     
   }
+
+  async getConversationHistory(id: string): Promise<any> {
+    // Get config values
+    const uri = this.configService.get<string>('mongodb_uri');
+    const dbName = this.configService.get<string>('database_name');
+    const collectionName = this.configService.get<string>('collection_name');
+
+    // Create a new MongoClient
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    try {
+      // Connect to the MongoDB server
+      await client.connect();
+  
+      // Access the database
+      const database = client.db(dbName);
+  
+      // Access the collection
+      const collection = database.collection(collectionName);
+  
+      // Convert id from string to ObjectId
+      const query = { _id: new ObjectId(id) };
+  
+      // Find the conversation by id
+      const result = await collection.findOne(query);
+  
+      // Check if the conversation was found
+      if (result) {
+        // Log and return messages array
+        console.log(result.messages);
+        return result.messages;
+      } else {
+        // If not found, return a suitable error message
+        return { error: 'Conversation not found' };
+      }
+  
+    } catch (err) {
+      console.log(err);
+      return { error: err };
+    } finally {
+      // Close the connection when done
+      await client.close();
+    }
+  }
+
 }

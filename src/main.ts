@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { IoAdapter } from '@nestjs/platform-socket.io';
-
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 
 async function bootstrap() {
@@ -14,6 +14,17 @@ async function bootstrap() {
     credentials: true,
     optionsSuccessStatus: 204,
   };
+
+  const config = new DocumentBuilder()
+    .setTitle('Reicever API')
+    .setDescription('Routes for the reicever API')
+    .setVersion('1.0')
+    .addTag('reicever')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
   app.enableCors(corsOptions);
 
   app.useWebSocketAdapter(new IoAdapter(app));

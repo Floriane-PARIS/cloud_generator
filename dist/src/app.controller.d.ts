@@ -13,5 +13,6 @@ export declare class AppController {
         read_by: string[];
         smoke: boolean;
     }): string;
-    getDb(): Promise<any>;
+    getHistory(): Promise<any>;
+    getConversationHistory(id: string): Promise<any>;
 }

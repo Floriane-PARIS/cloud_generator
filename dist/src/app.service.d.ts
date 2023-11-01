@@ -21,5 +21,6 @@ export declare class AppService {
         smoke: boolean;
     }): string;
     getHello(): string;
-    getDb(): Promise<any>;
+    getHistory(): Promise<any>;
+    getConversationHistory(id: string): Promise<any>;
 }

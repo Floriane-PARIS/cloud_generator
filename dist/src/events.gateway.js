@@ -16,10 +16,18 @@ let EventsGateway = class EventsGateway {
     sendToAll(msg) {
         this.server.emit('newMessage', msg);
     }
+    sendToConversation(conversation_id, msg) {
+        this.server.to(conversation_id).emit('newMessage', msg);
+    }
     handleConnection(client, ...args) {
         console.log('New client connected');
         console.log(args);
         client.emit('connection', 'Successfully connected to server');
+    }
+    handleJoinConversations(client, conversation_ids) {
+        conversation_ids.forEach(id => {
+            client.join(id);
+        });
     }
     handleMessage(client, payload) {
         console.log('Handling message', payload);
@@ -34,9 +42,15 @@ __decorate([
     __metadata("design:type", socket_io_1.Server)
 ], EventsGateway.prototype, "server", void 0);
 __decorate([
+    (0, websockets_1.SubscribeMessage)('joinConversations'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, Array]),
+    __metadata("design:returntype", void 0)
+], EventsGateway.prototype, "handleJoinConversations", null);
+__decorate([
     (0, websockets_1.SubscribeMessage)('message'),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
     __metadata("design:returntype", Object)
 ], EventsGateway.prototype, "handleMessage", null);
 exports.EventsGateway = EventsGateway = __decorate([
