@@ -111,7 +111,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Return the stories.' }),
     __param(0, (0, common_1.Query)('storyIds')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Array]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "getStories", null);
 exports.AppController = AppController = __decorate([

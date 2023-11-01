@@ -16,5 +16,5 @@ export declare class AppController {
     getHistory(): Promise<any>;
     getConversationHistory(id: string): Promise<any>;
     getConversation(id: string): Promise<any>;
-    getStories(storyIds: string[]): Promise<any>;
+    getStories(storyIds: string): Promise<any>;
 }

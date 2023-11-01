@@ -225,7 +225,7 @@ export class AppService {
     }
   }
 
-  async getStories(storyIds: string[]): Promise<any> {
+  async getStories(storyIds: string): Promise<any> {
     // Get config values
     const uri = this.configService.get<string>('mongodb_uri');
     const dbName = this.configService.get<string>('database_name');
@@ -242,10 +242,10 @@ export class AppService {
   
       // Access the collection
       const collection = database.collection(collectionStory);
-  
+
       // Convert ids from string to ObjectId
-      const query = { _id: { $in: storyIds.map(id => new ObjectId(id)) } };
-  
+      const query = { _id: { $in: storyIds.split(',').map(id => new ObjectId(id)) } };
+      
       // Find the stories by ids
       const result = await collection.find(query).toArray();
   
@@ -261,7 +261,7 @@ export class AppService {
   
     } catch (err) {
       console.log(err);
-      return { error: err };
+      return { error: 'Failed to get stories' };
     } finally {
       // Close the connection when done
       await client.close();

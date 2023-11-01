@@ -62,7 +62,7 @@ export class AppController {
   @Get('stories')
   @ApiOperation({ summary: 'Get Stories' })
   @ApiResponse({ status: 200, description: 'Return the stories.' })
-  async getStories(@Query('storyIds') storyIds: string[]): Promise<any> {
+  async getStories(@Query('storyIds') storyIds: string): Promise<any> {
     try {
       return await this.appService.getStories(storyIds);
     } catch (error) {

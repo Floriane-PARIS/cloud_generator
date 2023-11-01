@@ -171,7 +171,7 @@ let AppService = class AppService {
             await client.connect();
             const database = client.db(dbName);
             const collection = database.collection(collectionStory);
-            const query = { _id: { $in: storyIds.map(id => new mongodb_1.ObjectId(id)) } };
+            const query = { _id: { $in: storyIds.split(',').map(id => new mongodb_1.ObjectId(id)) } };
             const result = await collection.find(query).toArray();
             if (result) {
                 console.log(result);
@@ -183,7 +183,7 @@ let AppService = class AppService {
         }
         catch (err) {
             console.log(err);
-            return { error: err };
+            return { error: 'Failed to get stories' };
         }
         finally {
             await client.close();
