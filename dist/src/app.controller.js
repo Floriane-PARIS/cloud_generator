@@ -91,7 +91,7 @@ __decorate([
     (0, common_1.Get)('conversation/:id/history'),
     (0, swagger_1.ApiOperation)({ summary: 'Get Conversation History' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Return the conversation history based on id.' }),
-    __param(0, (0, common_1.Headers)('id')),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
@@ -100,7 +100,7 @@ __decorate([
     (0, common_1.Get)('conversation/:id'),
     (0, swagger_1.ApiOperation)({ summary: 'Get Conversation' }),
     (0, swagger_1.ApiResponse)({ status: 200, description: 'Return the conversation based on id.' }),
-    __param(0, (0, common_1.Headers)('id')),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
