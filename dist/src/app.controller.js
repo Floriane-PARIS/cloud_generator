@@ -44,6 +44,14 @@ let AppController = class AppController {
             throw new common_1.HttpException(`Failed to get stories: ${error.message}`, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    async getStoriesByUserId(userId) {
+        try {
+            return await this.appService.getStoriesViewableByUserId(userId);
+        }
+        catch (error) {
+            throw new common_1.HttpException(`Failed to get stories: ${error.message}`, common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 };
 exports.AppController = AppController;
 __decorate([
@@ -116,6 +124,15 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "getStories", null);
+__decorate([
+    (0, common_1.Get)('users/:userId/stories/viewable'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get Stories viewable by a user' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Return the stories viewable by a user.' }),
+    __param(0, (0, common_1.Param)('userId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "getStoriesByUserId", null);
 exports.AppController = AppController = __decorate([
     (0, swagger_1.ApiTags)('Server'),
     (0, common_1.Controller)('server'),

@@ -5,6 +5,7 @@ import { Console } from 'console';
 import { ObjectId } from 'mongodb';
 const { MongoClient } = require('mongodb');
 import { EventsGateway } from './events.gateway';
+import { ObjectIdLike } from 'bson';
 
 
 
@@ -265,6 +266,52 @@ export class AppService {
     } finally {
       // Close the connection when done
       await client.close();
+    }
+  }
+
+  async getStoriesViewableByUserId(userId: string): Promise<any> {
+    // Get config values
+    const uri = this.configService.get<string>('mongodb_uri');
+    const dbName = this.configService.get<string>('database_name');
+    const collectionStory_str = this.configService.get<string>('collection_story');
+    const collectionUser_str = this.configService.get<string>('collection_user');
+
+    // Create a new MongoClient
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    try {
+      // Connectez-vous au serveur MongoDB
+      await client.connect();
+
+      // Accédez à la base de données
+      const database = client.db(dbName);
+
+      // Accédez aux collections utilisateur et histoire
+      const collectionUser = database.collection(collectionUser_str);
+      const collectionStory = database.collection(collectionStory_str);
+
+      // Trouvez l'utilisateur par userId
+      const user = await collectionUser.findOne({ user_id: userId });
+      if (!user) {
+          return { error: 'User not found' };
+      }
+
+      // Obtenez les identifiants des histoires consultables
+      const viewableStoriesIds = user.viewable_stories.map((id: string | number | ObjectId | ObjectIdLike | Uint8Array) => new ObjectId(id));
+
+      // Trouvez les histoires par identifiants
+      const stories = await collectionStory.find(
+        { _id: { $in: viewableStoriesIds } },
+        { projection: { _id:0, user_id: 1, image_url: 1 } } // Projection pour inclure seulement user_id et image_url
+      ).toArray();
+
+      return stories;
+
+    } catch (err) {
+        console.log(err);
+        return { error: 'Failed to get stories' };
+    } finally {
+        // Fermez la connexion quand c'est fini
+        await client.close();
     }
   }
 }

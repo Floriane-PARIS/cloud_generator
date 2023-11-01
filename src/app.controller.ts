@@ -71,5 +71,16 @@ export class AppController {
       throw new HttpException(`Failed to get stories: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  @Get('users/:userId/stories/viewable')
+  @ApiOperation({ summary: 'Get Stories viewable by a user' })
+  @ApiResponse({ status: 200, description: 'Return the stories viewable by a user.' })
+  async getStoriesByUserId(@Param('userId') userId: string): Promise<any> {
+      try {
+          return await this.appService.getStoriesViewableByUserId(userId);
+      } catch (error) {
+          throw new HttpException(`Failed to get stories: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+  }
   
 }

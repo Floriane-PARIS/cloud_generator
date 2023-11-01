@@ -189,6 +189,33 @@ let AppService = class AppService {
             await client.close();
         }
     }
+    async getStoriesViewableByUserId(userId) {
+        const uri = this.configService.get('mongodb_uri');
+        const dbName = this.configService.get('database_name');
+        const collectionStory_str = this.configService.get('collection_story');
+        const collectionUser_str = this.configService.get('collection_user');
+        const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        try {
+            await client.connect();
+            const database = client.db(dbName);
+            const collectionUser = database.collection(collectionUser_str);
+            const collectionStory = database.collection(collectionStory_str);
+            const user = await collectionUser.findOne({ user_id: userId });
+            if (!user) {
+                return { error: 'User not found' };
+            }
+            const viewableStoriesIds = user.viewable_stories.map((id) => new mongodb_1.ObjectId(id));
+            const stories = await collectionStory.find({ _id: { $in: viewableStoriesIds } }, { projection: { _id: 0, user_id: 1, image_url: 1 } }).toArray();
+            return stories;
+        }
+        catch (err) {
+            console.log(err);
+            return { error: 'Failed to get stories' };
+        }
+        finally {
+            await client.close();
+        }
+    }
 };
 exports.AppService = AppService;
 exports.AppService = AppService = __decorate([
