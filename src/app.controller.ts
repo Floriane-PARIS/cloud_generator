@@ -61,6 +61,7 @@ export class AppController {
     return await this.appService.getConversation(id);
   }
 
+  /* OLD route, use /users/:userId/stories/viewable instead
   @Get('stories')
   @ApiOperation({ summary: 'Get Stories' })
   @ApiResponse({ status: 200, description: 'Return the stories.' })
@@ -71,6 +72,7 @@ export class AppController {
       throw new HttpException(`Failed to get stories: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+  */
 
   @Get('users/:userId/stories/viewable')
   @ApiOperation({ summary: 'Get Stories viewable by a user' })

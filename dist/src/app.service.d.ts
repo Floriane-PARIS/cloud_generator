@@ -24,6 +24,5 @@ export declare class AppService {
     getHistory(): Promise<any>;
     getConversationHistory(id: string): Promise<any>;
     getConversation(id: string): Promise<any>;
-    getStories(storyIds: string): Promise<any>;
     getStoriesViewableByUserId(userId: string): Promise<any>;
 }

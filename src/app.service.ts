@@ -226,6 +226,7 @@ export class AppService {
     }
   }
 
+  /* OLD use getStoriesViewableByUserId instead
   async getStories(storyIds: string): Promise<any> {
     // Get config values
     const uri = this.configService.get<string>('mongodb_uri');
@@ -268,7 +269,7 @@ export class AppService {
       await client.close();
     }
   }
-
+  */
   async getStoriesViewableByUserId(userId: string): Promise<any> {
     // Get config values
     const uri = this.configService.get<string>('mongodb_uri');
