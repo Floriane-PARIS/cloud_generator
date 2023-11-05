@@ -40,6 +40,13 @@ import {
         client.join(id);
       });
     }
+
+    @SubscribeMessage('leaveConversations')
+    handleLeaveConversations(client: Socket, conversation_ids: string[]): void {
+      conversation_ids.forEach(id => {
+        client.leave(id);
+      });
+    }
   
     @SubscribeMessage('message')
     handleMessage(client: Socket, payload: any): WsResponse<string> {

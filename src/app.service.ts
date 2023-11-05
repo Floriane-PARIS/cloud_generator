@@ -253,23 +253,23 @@ export class AppService {
 
       const currentUtcTime = new Date();      
 
-      const stories = await collectionStory.find(
-        { 
-          _id: { $in: viewableStoriesIds },
-          $expr: {
-            $gt: [
-              { 
-                $add: [ 
-                  { $toDate: "$timestamp" },  // Convertir la chaîne timestamp en Date
-                  { $multiply: [ "$duration", 60000 ] }  // Convertir la durée en millisecondes
-                ] 
-              },
-              currentUtcTime
-            ]
+      const currentUtcTime = new Date();
+
+      const stories = await collectionStory.aggregate([
+        { $match: { _id: { $in: viewableStoriesIds } } },
+        {
+          $addFields: {
+            expirationTime: {
+              $add: [
+                { $toDate: "$timestamp" },
+                { $multiply: ["$duration", 60000] }  // Convertir la durée en millisecondes
+              ]
+            }
           }
         },
-        { projection: { _id:0, user_id: 1, image_url: 1 } } // Projection pour inclure seulement user_id et image_url
-      ).toArray();
+        { $match: { expirationTime: { $gt: currentUtcTime } } },
+        { $project: { _id: 0, user_id: 1, image_url: 1 } }  // Projection pour inclure seulement user_id et image_url
+      ]).toArray();
 
       return stories;
 
