@@ -253,8 +253,6 @@ export class AppService {
 
       const currentUtcTime = new Date();      
 
-      const currentUtcTime = new Date();
-
       const stories = await collectionStory.aggregate([
         { $match: { _id: { $in: viewableStoriesIds } } },
         {
