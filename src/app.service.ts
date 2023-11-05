@@ -251,25 +251,31 @@ export class AppService {
       // Obtenez les identifiants des histoires consultables
       const viewableStoriesIds = user.viewable_stories.map((id: string | number | ObjectId | ObjectIdLike | Uint8Array) => new ObjectId(id));
 
-      const currentUtcTime = new Date();      
+      const d = new Date();
+      const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+      const currentUtcTime = new Date(utc + (3600000 * +'+0'));
 
-      const stories = await collectionStory.aggregate([
-        { $match: { _id: { $in: viewableStoriesIds } } },
-        {
-          $addFields: {
-            expirationTime: {
-              $add: [
-                { $toDate: "$timestamp" },
-                { $multiply: ["$duration", 60000] }  // Convertir la durée en millisecondes
-              ]
-            }
-          }
-        },
-        { $match: { expirationTime: { $gt: currentUtcTime } } },
-        { $project: { _id: 0, user_id: 1, image_url: 1 } }  // Projection pour inclure seulement user_id et image_url
-      ]).toArray();
+      console.log('currentUtcTime', currentUtcTime);
 
-      return stories;
+      const stories = await collectionStory.find(
+        { _id: { $in: viewableStoriesIds } },
+        { projection: { _id: 0, user_id: 1, image_url: 1, timestamp: 1, duration: 1 } }  // Incluez timestamp et duration dans la projection
+      ).toArray();
+
+      // Filtrer les histoires expirées
+      const nonExpiredStories = stories.filter(story => {
+        const storyTime = new Date(story.timestamp);
+        const expirationTime = new Date(storyTime.getTime() + story.duration * 60000);
+        return expirationTime > currentUtcTime;
+      });
+
+      // Supprimer les champs timestamp et duration de chaque histoire
+      const finalStories = nonExpiredStories.map(story => ({
+        user_id: story.user_id,
+        image_url: story.image_url
+      }));
+
+      return finalStories;
 
     } catch (err) {
         console.log(err);
