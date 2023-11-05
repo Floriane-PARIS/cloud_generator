@@ -79,7 +79,7 @@ let AppService = class AppService {
         console.log("New message sent by : " + body.sender);
         console.log("Message : ", body.text);
         console.log("Image : ", body.image);
-        this.gateway.sendToAll(JSON.stringify(body));
+        this.gateway.sendToConversation(body.conversation_id, JSON.stringify(body));
         return "New message sent by " + body.sender + "\nMessage : " + body.text;
     }
     getHello() {
@@ -178,8 +178,21 @@ let AppService = class AppService {
                 return { error: 'User not found' };
             }
             const viewableStoriesIds = user.viewable_stories.map((id) => new mongodb_1.ObjectId(id));
-            const stories = await collectionStory.find({ _id: { $in: viewableStoriesIds } }, { projection: { _id: 0, user_id: 1, image_url: 1 } }).toArray();
-            return stories;
+            const d = new Date();
+            const utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+            const currentUtcTime = new Date(utc + (3600000 * +'+0'));
+            console.log('currentUtcTime', currentUtcTime);
+            const stories = await collectionStory.find({ _id: { $in: viewableStoriesIds } }, { projection: { _id: 0, user_id: 1, image_url: 1, timestamp: 1, duration: 1 } }).toArray();
+            const nonExpiredStories = stories.filter(story => {
+                const storyTime = new Date(story.timestamp);
+                const expirationTime = new Date(storyTime.getTime() + story.duration * 60000);
+                return expirationTime > currentUtcTime;
+            });
+            const finalStories = nonExpiredStories.map(story => ({
+                user_id: story.user_id,
+                image_url: story.image_url
+            }));
+            return finalStories;
         }
         catch (err) {
             console.log(err);

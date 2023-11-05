@@ -29,6 +29,11 @@ let EventsGateway = class EventsGateway {
             client.join(id);
         });
     }
+    handleLeaveConversations(client, conversation_ids) {
+        conversation_ids.forEach(id => {
+            client.leave(id);
+        });
+    }
     handleMessage(client, payload) {
         console.log('Handling message', payload);
         const { idSender, idReceiver, msg } = payload;
@@ -47,6 +52,12 @@ __decorate([
     __metadata("design:paramtypes", [socket_io_1.Socket, Array]),
     __metadata("design:returntype", void 0)
 ], EventsGateway.prototype, "handleJoinConversations", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('leaveConversations'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, Array]),
+    __metadata("design:returntype", void 0)
+], EventsGateway.prototype, "handleLeaveConversations", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)('message'),
     __metadata("design:type", Function),
