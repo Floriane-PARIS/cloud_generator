@@ -36,6 +36,9 @@ import {
 
     @SubscribeMessage('joinConversations')
     handleJoinConversations(client: Socket, conversation_ids: string[]): void {
+      console.log('Joining conversations');
+      console.log(conversation_ids);
+      console.log(typeof conversation_ids);
       conversation_ids.forEach(id => {
         client.join(id);
       });
