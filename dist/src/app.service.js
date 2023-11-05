@@ -185,7 +185,7 @@ let AppService = class AppService {
             const stories = await collectionStory.find({ _id: { $in: viewableStoriesIds } }, { projection: { _id: 0, user_id: 1, image_url: 1, timestamp: 1, duration: 1 } }).toArray();
             const nonExpiredStories = stories.filter(story => {
                 const storyTime = new Date(story.timestamp);
-                const expirationTime = new Date(storyTime.getTime() + story.duration * 60000);
+                const expirationTime = new Date(storyTime.getTime() + story.duration * 3600000);
                 return expirationTime > currentUtcTime;
             });
             const finalStories = nonExpiredStories.map(story => ({

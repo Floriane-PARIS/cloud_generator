@@ -265,7 +265,7 @@ export class AppService {
       // Filtrer les histoires expirées
       const nonExpiredStories = stories.filter(story => {
         const storyTime = new Date(story.timestamp);
-        const expirationTime = new Date(storyTime.getTime() + story.duration * 60000);
+        const expirationTime = new Date(storyTime.getTime() + story.duration * 3600000);
         return expirationTime > currentUtcTime;
       });
 
