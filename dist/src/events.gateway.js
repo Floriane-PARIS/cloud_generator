@@ -24,13 +24,10 @@ let EventsGateway = class EventsGateway {
         console.log(args);
         client.emit('connection', 'Successfully connected to server');
     }
-    handleJoinConversations(client, conversation_ids) {
-        console.log('Joining conversations, conversation_ids:');
-        console.log(conversation_ids);
-        conversation_ids.forEach(id => {
-            console.log('Joining conversation ' + id);
-            client.join(id);
-        });
+    handleJoinConversations(client, payload) {
+        const conversation_id = payload.conversation_ids[0];
+        console.log('Joining conversation, conversation_id:', conversation_id);
+        client.join(conversation_id);
     }
     handleLeaveConversations(client, payload) {
         const conversation_id = payload.conversation_ids[0];
@@ -52,7 +49,7 @@ __decorate([
 __decorate([
     (0, websockets_1.SubscribeMessage)('joinConversations'),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [socket_io_1.Socket, Array]),
+    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
     __metadata("design:returntype", void 0)
 ], EventsGateway.prototype, "handleJoinConversations", null);
 __decorate([

@@ -35,13 +35,10 @@ import {
     }
 
     @SubscribeMessage('joinConversations')
-    handleJoinConversations(client: Socket, conversation_ids: string[]): void {
-      console.log('Joining conversations, conversation_ids:');
-      console.log(conversation_ids);
-      conversation_ids.forEach(id => {
-        console.log('Joining conversation ' + id);
-        client.join(id);
-      });
+    handleJoinConversations(client: Socket, payload: any): void {
+      const conversation_id = payload.conversation_ids[0];
+      console.log('Joining conversation, conversation_id:', conversation_id);
+      client.join(conversation_id);
     }
 
     @SubscribeMessage('leaveConversations')
