@@ -61,19 +61,6 @@ export class AppController {
     return await this.appService.getConversation(id);
   }
 
-  /* OLD route, use /users/:userId/stories/viewable instead
-  @Get('stories')
-  @ApiOperation({ summary: 'Get Stories' })
-  @ApiResponse({ status: 200, description: 'Return the stories.' })
-  async getStories(@Query('storyIds') storyIds: string): Promise<any> {
-    try {
-      return await this.appService.getStories(storyIds);
-    } catch (error) {
-      throw new HttpException(`Failed to get stories: ${error.message}`, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-  */
-
   @Get('users/:userId/stories/viewable')
   @ApiOperation({ summary: 'Get Stories viewable by a user' })
   @ApiResponse({ status: 200, description: 'Return the stories viewable by a user.' })

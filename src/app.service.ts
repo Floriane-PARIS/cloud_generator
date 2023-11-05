@@ -88,10 +88,10 @@ export class AppService {
     console.log("New message sent by : "+ body.sender);
     console.log("Message : ", body.text);
     console.log("Image : ", body.image);
-    // Here need to send by socket.io to the other user ?
-    this.gateway.sendToAll(JSON.stringify(body));
 
-    //this.gateway.sendToConversation(body.conversation_id, JSON.stringify(body));
+    // this.gateway.sendToAll(JSON.stringify(body));
+
+    this.gateway.sendToConversation(body.conversation_id, JSON.stringify(body));
     
     return "New message sent by " + body.sender + "\nMessage : " + body.text;
   }
@@ -226,50 +226,6 @@ export class AppService {
     }
   }
 
-  /* OLD use getStoriesViewableByUserId instead
-  async getStories(storyIds: string): Promise<any> {
-    // Get config values
-    const uri = this.configService.get<string>('mongodb_uri');
-    const dbName = this.configService.get<string>('database_name');
-    const collectionStory = this.configService.get<string>('collection_story');
-
-    // Create a new MongoClient
-    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-    try {
-      // Connect to the MongoDB server
-      await client.connect();
-  
-      // Access the database
-      const database = client.db(dbName);
-  
-      // Access the collection
-      const collection = database.collection(collectionStory);
-
-      // Convert ids from string to ObjectId
-      const query = { _id: { $in: storyIds.split(',').map(id => new ObjectId(id)) } };
-      
-      // Find the stories by ids
-      const result = await collection.find(query).toArray();
-  
-      // Check if the stories were found
-      if (result) {
-        // Log and return stories array
-        console.log(result);
-        return result;
-      } else {
-        // If not found, return a suitable error message
-        return { error: 'Stories not found' };
-      }
-  
-    } catch (err) {
-      console.log(err);
-      return { error: 'Failed to get stories' };
-    } finally {
-      // Close the connection when done
-      await client.close();
-    }
-  }
-  */
   async getStoriesViewableByUserId(userId: string): Promise<any> {
     // Get config values
     const uri = this.configService.get<string>('mongodb_uri');
@@ -280,17 +236,13 @@ export class AppService {
     // Create a new MongoClient
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     try {
-      // Connectez-vous au serveur MongoDB
       await client.connect();
 
-      // Accédez à la base de données
       const database = client.db(dbName);
 
-      // Accédez aux collections utilisateur et histoire
       const collectionUser = database.collection(collectionUser_str);
       const collectionStory = database.collection(collectionStory_str);
 
-      // Trouvez l'utilisateur par userId
       const user = await collectionUser.findOne({ user_id: userId });
       if (!user) {
           return { error: 'User not found' };
@@ -299,9 +251,23 @@ export class AppService {
       // Obtenez les identifiants des histoires consultables
       const viewableStoriesIds = user.viewable_stories.map((id: string | number | ObjectId | ObjectIdLike | Uint8Array) => new ObjectId(id));
 
-      // Trouvez les histoires par identifiants
+      const currentUtcTime = new Date();      
+
       const stories = await collectionStory.find(
-        { _id: { $in: viewableStoriesIds } },
+        { 
+          _id: { $in: viewableStoriesIds },
+          $expr: {
+            $gt: [
+              { 
+                $add: [ 
+                  { $toDate: "$timestamp" },  // Convertir la chaîne timestamp en Date
+                  { $multiply: [ "$duration", 60000 ] }  // Convertir la durée en millisecondes
+                ] 
+              },
+              currentUtcTime
+            ]
+          }
+        },
         { projection: { _id:0, user_id: 1, image_url: 1 } } // Projection pour inclure seulement user_id et image_url
       ).toArray();
 
