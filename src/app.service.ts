@@ -89,9 +89,9 @@ export class AppService {
     console.log("Message : ", body.text);
     console.log("Image : ", body.image);
 
-    this.gateway.sendToAll(JSON.stringify(body));
+    //this.gateway.sendToAll(JSON.stringify(body));
 
-    //this.gateway.sendToConversation(body.conversation_id, JSON.stringify(body));
+    this.gateway.sendToConversation(body.conversation_id, JSON.stringify(body));
     
     return "New message sent by " + body.sender + "\nMessage : " + body.text;
   }

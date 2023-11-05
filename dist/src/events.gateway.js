@@ -25,11 +25,15 @@ let EventsGateway = class EventsGateway {
         client.emit('connection', 'Successfully connected to server');
     }
     handleJoinConversations(client, conversation_ids) {
+        console.log('Joining conversations');
         conversation_ids.forEach(id => {
             client.join(id);
         });
     }
     handleLeaveConversations(client, conversation_ids) {
+        console.log('Leaving conversations, conversation_ids:');
+        console.log(conversation_ids);
+        console.log(typeof (conversation_ids));
         conversation_ids.forEach(id => {
             client.leave(id);
         });

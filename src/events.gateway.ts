@@ -44,6 +44,9 @@ import {
 
     @SubscribeMessage('leaveConversations')
     handleLeaveConversations(client: Socket, conversation_ids: string[]): void {
+      console.log('Leaving conversations, conversation_ids:');
+      console.log(conversation_ids);
+      console.log(typeof(conversation_ids));
       conversation_ids.forEach(id => {
         client.leave(id);
       });
