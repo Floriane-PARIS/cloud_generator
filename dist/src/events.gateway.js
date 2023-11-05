@@ -25,18 +25,17 @@ let EventsGateway = class EventsGateway {
         client.emit('connection', 'Successfully connected to server');
     }
     handleJoinConversations(client, conversation_ids) {
-        console.log('Joining conversations');
+        console.log('Joining conversations, conversation_ids:');
+        console.log(conversation_ids);
         conversation_ids.forEach(id => {
+            console.log('Joining conversation ' + id);
             client.join(id);
         });
     }
-    handleLeaveConversations(client, conversation_ids) {
-        console.log('Leaving conversations, conversation_ids:');
-        console.log(conversation_ids);
-        console.log(typeof (conversation_ids));
-        conversation_ids.forEach(id => {
-            client.leave(id);
-        });
+    handleLeaveConversations(client, payload) {
+        const conversation_id = payload.conversation_ids[0];
+        console.log('Leaving conversation, conversation_id:', conversation_id);
+        client.leave(conversation_id);
     }
     handleMessage(client, payload) {
         console.log('Handling message', payload);
@@ -59,7 +58,7 @@ __decorate([
 __decorate([
     (0, websockets_1.SubscribeMessage)('leaveConversations'),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [socket_io_1.Socket, Array]),
+    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
     __metadata("design:returntype", void 0)
 ], EventsGateway.prototype, "handleLeaveConversations", null);
 __decorate([

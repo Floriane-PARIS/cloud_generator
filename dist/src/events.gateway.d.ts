@@ -6,6 +6,6 @@ export declare class EventsGateway implements OnGatewayConnection {
     sendToConversation(conversation_id: string, msg: string): void;
     handleConnection(client: Socket, ...args: any[]): void;
     handleJoinConversations(client: Socket, conversation_ids: string[]): void;
-    handleLeaveConversations(client: Socket, conversation_ids: string[]): void;
+    handleLeaveConversations(client: Socket, payload: any): void;
     handleMessage(client: Socket, payload: any): WsResponse<string>;
 }
